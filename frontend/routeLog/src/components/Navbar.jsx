@@ -1,0 +1,71 @@
+import {
+  Box,
+  Typography
+} from "@mui/material";
+
+import DateFilters from "./DateFilters"
+import MenuIcon from '@mui/icons-material/Menu';
+import menu from "./data"
+
+export default function Navbar({ selectedIndex }) {
+  const itemSeleccionado = menu[selectedIndex];
+  return (
+    <Box 
+      //position="static"
+      //elevation={0}
+      sx={{
+        height: 64,
+        backgroundColor: "#ffffff",
+        color: "#111827",
+        borderBottom: "1px solid #e5e7eb",
+        px: 3,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        minWidth: 0
+      }}>
+
+      {/* IZQUIERDA */}
+      <Box
+      sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          minWidth: 0
+      }}
+      >
+        <MenuIcon  sx={{
+          color: "#6b7280",
+          fontSize: 22,
+          flexShrink: 0
+        }}
+        />
+        <Typography
+          sx={{
+              fontSize: 16,
+              fontWeight: 600,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis"          
+          }}
+        >
+          {itemSeleccionado?.descripcion}
+        </Typography>
+      </Box>
+      
+      {/* DERECHA */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1.5,
+          flexShrink: 0
+        }}
+      >
+        {/* FECHA */}
+        <DateFilters />
+      </Box>
+  
+    </Box>
+  );
+}
