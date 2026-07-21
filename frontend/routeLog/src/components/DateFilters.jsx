@@ -1,18 +1,24 @@
-import * as React from "react";
-
-import { Box} from "@mui/material";
+import { Box } from "@mui/material";
 
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
+import useDateFilter from '../hooks/useDateFilter'
+
+import "dayjs/locale/es";
+
 export default function DateFilters() {
 
-  const [fechaDesde, setFechaDesde] = React.useState(null);
-  const [fechaHasta, setFechaHasta] = React.useState(null);
+  const {
+    fechaDesde,
+    fechaHasta,
+    setFechaDesde,
+    setFechaHasta
+  } = useDateFilter()
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
       <Box
         sx={{
           display: "flex",
@@ -22,25 +28,39 @@ export default function DateFilters() {
         <DatePicker
           label="Desde"
           value={fechaDesde}
-          onChange={(newValue) => setFechaDesde(newValue)}
+          onChange={setFechaDesde}
+          format="DD/MM/YYYY"
           slotProps={{
             textField: {
               size: "small"
             }
           }}
-          sx={{width:180}}
+          sx={{
+            width: {
+              xs: 100,
+              sm: 140,
+              md: 180
+            }
+          }}
         />
 
         <DatePicker
           label="Hasta"
           value={fechaHasta}
-          onChange={(newValue) => setFechaHasta(newValue)}
+          onChange={setFechaHasta}
+          format="DD/MM/YYYY"
           slotProps={{
             textField: {
               size: "small"
             }
           }}
-          sx={{width:180}}
+          sx={{
+            width: {
+              xs: 100,
+              sm: 140,
+              md: 180
+            }
+          }}
         />
       </Box>
     </LocalizationProvider>

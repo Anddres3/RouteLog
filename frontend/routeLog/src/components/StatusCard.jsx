@@ -1,7 +1,8 @@
 import {
   Paper,
   Typography,
-  Box
+  Box,
+  Skeleton
 } from "@mui/material";
 
 import {
@@ -11,23 +12,83 @@ import {
   ResponsiveContainer
 } from "recharts";
 
-import data from "./dataCardsResumen";
-const { cardsHeader } = data;
+import cardsEnviosConfig from "./datos/dataKPIEnvios.jsx";
+
+import { useEffect, useState } from 'react'
+
+import {obtenerEnviosTotales} from '../services/api.js'
+
+import  useDateFilter from '../hooks/useDateFilter.js'
 
 export default function StatusCard() {
 
-    const total = cardsHeader.filter(c => c.titulo === "Total envíos")[0].cantidad;
+    const [loading, setLoading] = useState(true);
+    
+    const [enviosTotales, setEnviosTotales] = useState({});
+
+      const {
+        fechaDesde,
+        fechaHasta
+      } = useDateFilter()
+
+      useEffect(() => {
+          const obtenerDatos = async () => {
+              try {
+                  setLoading(true)
+  
+                  const result = await obtenerEnviosTotales(
+                    fechaDesde? fechaDesde.format('YYYY-MM-DD'): null,
+                    fechaHasta? fechaHasta.format('YYYY-MM-DD'): null
+                  );
+                  setEnviosTotales(result.data[0])
+
+              } catch (error) {
+                  console.error(error)
+              } finally {
+                  setLoading(false)
+              }
+          }
+          obtenerDatos()
+      }, [fechaDesde,fechaHasta])
+
+    const cardsEnvios = cardsEnviosConfig.map(card => ({
+    ...card,
+    cantidad: Number(enviosTotales[card.id]) || 0
+  }))
+
+    const total = cardsEnvios.filter(c => c.id === "total")[0].cantidad;
 
     const subTotales = 
-    cardsHeader.filter(d => d.titulo !== "Total envíos")
-    .map(
-      c => (
-        {name: c.titulo, value: c.cantidad, color: c.colorTorta}
+      total === 0? 
+      [
+        {
+          name: "No hay envíos para mostrar",
+          value: 1,
+          color: "#555",
+        },
+      ]
+      :
+      cardsEnvios
+      .filter(d => d.id !== "total")
+      .map(
+        c => (
+          {name: c.titulo, value: c.cantidad, color: c.colorTorta}
+        )
       )
-    );
+      .sort( (a, b) => b.value - a.value );
+
 
   return (
-    <Paper
+      loading?
+        <Skeleton
+          variant="rounded"
+          height={112}
+          borderRadius= {4}
+          width= {"100%"}
+          height={"100%"}
+        />          
+      :
+      <Paper
       elevation={0}
       sx={{
         p: 3,
@@ -46,7 +107,7 @@ export default function StatusCard() {
             textAlign: "center",
             }}
         >
-            Estado de envíos
+            Estado de Envíos
       </Typography>
 
       {/* CONTENIDO */}
@@ -67,7 +128,7 @@ export default function StatusCard() {
             width: 180,
             height: 180,
             position: "relative",
-            mx: "auto"
+            mx: "auto",
           }}
         >
           <ResponsiveContainer>
@@ -83,12 +144,14 @@ export default function StatusCard() {
                 endAngle={450}
                 stroke="none"
               >
-                {subTotales.map((entry) => (
+                {
+                subTotales.map((entry) => (
                   <Cell
                     key={entry.name}
                     fill={entry.color}
                   />
-                ))}
+                ))
+                }
               </Pie>
 
             </PieChart>
@@ -174,21 +237,26 @@ export default function StatusCard() {
                   {item.name}
                 </Typography>
               </Box>
-
-              <Typography
-                sx={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  flexShrink: 0
-                }}
-              >
-                {item.value}
-              </Typography>
+              
+              {
+              total !== 0 && (
+                <Typography
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 600,
+                    flexShrink: 0
+                  }}
+                >
+                  {item.value}
+                </Typography>
+              )}
+              
             </Box>
           ))}
         </Box>
 
       </Box>
     </Paper>
+   
   );
 }

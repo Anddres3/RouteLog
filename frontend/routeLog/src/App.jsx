@@ -1,11 +1,17 @@
-import DashboardLayout from "./layouts/DashboardLayout";
-import Dashboard from "./pages/Dashboard";
+import { BrowserRouter } from "react-router-dom";
+import AppRoutes from "./routes/AppRoutes";
+import { AuthProvider  } from "./context/AuthContext";
+import { DateFilterProvider } from "./context/DateFilterContext";
 
 function App() {
   return (
-    <DashboardLayout>
-      <Dashboard />
-    </DashboardLayout>
+    <AuthProvider>
+      <DateFilterProvider>
+        <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+      </DateFilterProvider>
+    </AuthProvider>
   );
 }
 
