@@ -31,16 +31,10 @@ export default function AppRoutes() {
             <Route 
             path="/" 
             element={
-<<<<<<< HEAD
-                ///Restaurar a futuro
+                //Restaurar despues
                 //<ProtectedRoute rol="ADMINISTRADOR">
                     <DashboardLayout />
                 //</ProtectedRoute>
-=======
-                <ProtectedRoute rol="ADMINISTRADOR">
-                    <DashboardLayout />
-                </ProtectedRoute>
->>>>>>> 62fbe0d07041222e52fff16223b201f9c6845077
             }>
                 <Route index element={<Dashboard />} />
 
@@ -68,20 +62,17 @@ export default function AppRoutes() {
             {/* Ruta Default */}
             <Route
                 path="*"
-                element={<Navigate to="/login" replace />}
+                element={<Navigate to="/" replace />}
             />
 
-<<<<<<< HEAD
-            {/*
-            {/* Ruta Default /}
+            {/* Ruta Default
             <Route
                 path="*"
                 element={<Navigate to="/login" replace />}
             />
-            */}
 
-=======
->>>>>>> 62fbe0d07041222e52fff16223b201f9c6845077
+             */}
+
         </Routes>
     );
 }
